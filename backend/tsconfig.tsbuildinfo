@@ -1,1 +1,1 @@
-{"root":["./src/index.ts"],"version":"5.7.2"}
+{"root":["./src/index.ts","./src/config/constants.ts","./src/config/prompts.ts","./src/config/stripindents.ts","./src/controllers/template.ts","./src/routes/template.ts","./src/services/mistral.ts"],"version":"5.7.2"}

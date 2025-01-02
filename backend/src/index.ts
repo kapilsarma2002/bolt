@@ -1,24 +1,17 @@
-require('dotenv').config();
+import express from 'express'
+import templateRouter from './routes/template'
 
-import { Mistral } from '@mistralai/mistralai';
+const app = express()
+const PORT = 3000
 
-const apiKey = process.env.MISTRAL_API_KEY;
+app.use(express.json())
+app.use((req, res, next) => {
+  res.appendHeader('Content-Type', 'application/json')
+  next()
+})
 
-const mistral = new Mistral({apiKey: apiKey});
+app.use('/template', templateRouter)
 
-async function main() {
-  const result = await mistral.chat.stream({
-    model: 'mistral-large-latest',
-    messages: [{role: 'user', content: 'Write code for a simple todo application in react'}],
-  });
-  
-  for await (const event of result) {
-    const content = event.data.choices[0].delta.content;
-    if (content) {
-      process.stdout.write(content.toString());
-    }
-  }
-  process.stdout.write('\n');
-}
-
-main()
+app.listen(PORT, () => {
+  console.log('Server is running on port 3000')
+})
