@@ -9,6 +9,7 @@ const mistral = new Mistral({ apiKey: apiKey })
 export const getTemplateResponse = async (prompt: string) => {
   const res = await mistral.chat.complete({
     model: 'mistral-large-latest',
+    maxTokens: 1,
     messages: [
       {
         role: 'system',
@@ -21,12 +22,13 @@ export const getTemplateResponse = async (prompt: string) => {
   return res.choices?.[0].message.content
 }
 
-export const codeResponse = async () => {
+export const getCodeResponse = async (messages: any[]) => {
   const result = await mistral.chat.stream({
     model: 'mistral-large-latest',
+    maxTokens: 8000,
     messages: [
       { role: 'system', content: getSystemPrompt() },
-      { role: 'user', content: 'Write code for a simple todo application' },
+      ...messages
     ],
   })
 

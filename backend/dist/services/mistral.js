@@ -7,7 +7,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.codeResponse = exports.getTemplateResponse = void 0;
+exports.getCodeResponse = exports.getTemplateResponse = void 0;
 require('dotenv').config();
 const mistralai_1 = require("@mistralai/mistralai");
 const prompts_1 = require("../config/prompts");
@@ -17,6 +17,7 @@ const getTemplateResponse = async (prompt) => {
     var _a;
     const res = await mistral.chat.complete({
         model: 'mistral-large-latest',
+        maxTokens: 1,
         messages: [
             {
                 role: 'system',
@@ -28,13 +29,14 @@ const getTemplateResponse = async (prompt) => {
     return (_a = res.choices) === null || _a === void 0 ? void 0 : _a[0].message.content;
 };
 exports.getTemplateResponse = getTemplateResponse;
-const codeResponse = async () => {
+const getCodeResponse = async (messages) => {
     var _a, e_1, _b, _c;
     const result = await mistral.chat.stream({
         model: 'mistral-large-latest',
+        maxTokens: 8000,
         messages: [
             { role: 'system', content: (0, prompts_1.getSystemPrompt)() },
-            { role: 'user', content: 'Write code for a simple todo application' },
+            ...messages
         ],
     });
     try {
@@ -57,4 +59,4 @@ const codeResponse = async () => {
     }
     process.stdout.write('\n');
 };
-exports.codeResponse = codeResponse;
+exports.getCodeResponse = getCodeResponse;
