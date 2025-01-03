@@ -1,20 +1,24 @@
-import React, { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import { Header } from './components/Header';
 import { PromptInput } from './components/PromptInput';
 import { Workspace } from './components/Workspace';
 import { Sparkles } from 'lucide-react';
 
+const MemoizedWorkspace = memo(Workspace);
+
 export default function App() {
   const [isBuilding, setIsBuilding] = useState(false);
+  const [prompt, setPrompt] = useState('');
 
-  const handleBuild = () => {
-    setIsBuilding(true);
-  };
+  const handleBuild = useCallback((inputPrompt: string) => {
+    if (inputPrompt && !isBuilding) {
+      setPrompt(inputPrompt);
+      setIsBuilding(true);
+    }
+  }, [isBuilding]);
 
-  return (
-    <div className="min-h-screen bg-gray-900">
-      {!isBuilding ? (
-        <>
+  const LandingPage = (
+    <>
           <Header />
           <main className="pt-32 pb-16 px-4">
             <div className="max-w-3xl mx-auto space-y-36">
@@ -37,22 +41,15 @@ export default function App() {
 
               {/* Prompt Input */}
               <PromptInput onBuild={handleBuild} />
-
-              {/* Examples Section
-              <div className="space-y-8">
-                <div className="text-center">
-                  <h2 className="text-2xl font-semibold text-white">
-                    Need inspiration? Try these examples
-                  </h2>
-                </div>
-                <Examples />
-              </div> */}
+              
             </div>
           </main>
         </>
-      ) : (
-        <Workspace />
-      )}
+  )
+
+  return (
+    <div className="min-h-screen bg-gray-900">
+      {!isBuilding ? LandingPage : <MemoizedWorkspace key={prompt} prompt={prompt} />}
     </div>
   );
 }

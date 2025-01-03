@@ -2,16 +2,15 @@ import React, { useState } from 'react';
 import { Wand2 } from 'lucide-react';
 
 interface PromptInputProps {
-  onBuild: () => void;
+  onBuild: (prompt: string) => void;
 }
 
 export function PromptInput({ onBuild }: PromptInputProps) {
-  const [prompt, setPrompt] = useState('');
+  const [inputValue, setInputValue] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Building website with prompt:', prompt);
-    onBuild();
+    onBuild(inputValue);
   };
 
   return (
@@ -19,8 +18,8 @@ export function PromptInput({ onBuild }: PromptInputProps) {
       <div className="relative">
         <input
           type="text"
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
           placeholder="Describe the website you want to build..."
           className="w-full px-4 py-4 pr-32 text-white placeholder-gray-400 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />

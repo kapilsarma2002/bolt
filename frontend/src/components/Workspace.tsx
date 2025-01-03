@@ -1,10 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Steps } from "./workspace/Steps";
 import { CodeBlock } from "./workspace/CodeBlock";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { BACKEND_URL } from "../config";
+import axios from "axios";
 
-export function Workspace() {
+interface WorkspaceProps {
+  prompt: string;
+}
+
+export const Workspace: React.FC<WorkspaceProps> = ({ prompt }: {prompt: string}) => {
   const [isStepsOpen, setIsStepsOpen] = useState(true);
+
+  const init = async () => {
+    const res = await axios.post(`${BACKEND_URL}/template`, { prompt });
+    const {prompts, uiPrommpts} = res.data
+    const stepsResponse = await axios.post(`${BACKEND_URL}/chat`, { 
+      messages: [...prompts, prompt].map(content => ({
+        role: 'user',
+        content
+      }))
+    });
+  } 
+
+  useEffect(() => {
+    init()
+  })
 
   return (
     <div className="flex h-screen bg-gray-900 overflow-hidden">
