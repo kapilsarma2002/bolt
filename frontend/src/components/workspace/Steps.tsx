@@ -1,15 +1,15 @@
-import React from 'react';
 import { CheckCircle2, Circle, Loader2 } from 'lucide-react';
+import { Step } from '../../types';
 
-const steps = [
-  { id: 1, title: 'Analyzing Prompt', status: 'completed' },
-  { id: 2, title: 'Generating Structure', status: 'in-progress' },
-  { id: 3, title: 'Creating Components', status: 'pending' },
-  { id: 4, title: 'Applying Styles', status: 'pending' },
-  { id: 5, title: 'Finalizing', status: 'pending' },
-];
+// const steps = [
+//   { id: 1, title: 'Analyzing Prompt', status: 'completed' },
+//   { id: 2, title: 'Generating Structure', status: 'in-progress' },
+//   { id: 3, title: 'Creating Components', status: 'pending' },
+//   { id: 4, title: 'Applying Styles', status: 'pending' },
+//   { id: 5, title: 'Finalizing', status: 'pending' },
+// ];
 
-export function Steps() {
+export function Steps({ steps }: { steps: Step[] }) {
   return (
     <div className="h-full border-r border-gray-800 p-4">
       <h2 className="text-lg font-semibold text-white mb-6">Progress</h2>

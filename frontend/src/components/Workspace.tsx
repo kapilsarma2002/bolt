@@ -4,6 +4,8 @@ import { CodeBlock } from "./workspace/CodeBlock";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { BACKEND_URL } from "../config";
 import axios from "axios";
+import { Step } from "../types";
+import { parseXml } from "../steps";
 
 interface WorkspaceProps {
   prompt: string;
@@ -11,21 +13,28 @@ interface WorkspaceProps {
 
 export const Workspace: React.FC<WorkspaceProps> = ({ prompt }: {prompt: string}) => {
   const [isStepsOpen, setIsStepsOpen] = useState(true);
+  const [steps, setSteps] = useState<Step[]>([]);
 
   const init = async () => {
     const res = await axios.post(`${BACKEND_URL}/template`, { prompt });
-    const {prompts, uiPrommpts} = res.data
-    const stepsResponse = await axios.post(`${BACKEND_URL}/chat`, { 
-      messages: [...prompts, prompt].map(content => ({
-        role: 'user',
-        content
-      }))
-    });
+    const {prompts, uiPrompts} = res.data
+
+    setSteps(parseXml(uiPrompts[0]).map((x: Step) => ({
+      ...x,
+      status: "pending"
+    })));
+
+    // const stepsResponse = await axios.post(`${BACKEND_URL}/chat`, { 
+    //   messages: [...prompts, prompt].map(content => ({
+    //     role: 'user',
+    //     content
+    //   }))
+    // });
   } 
 
   useEffect(() => {
     init()
-  })
+  }, [])
 
   return (
     <div className="flex h-screen bg-gray-900 overflow-hidden">
@@ -40,7 +49,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ prompt }: {prompt: string}
             isStepsOpen ? "w-72" : "w-0"
           } overflow-hidden transition-all duration-300`}
         >
-          <Steps />
+          <Steps steps={steps} />
         </div>
         <button
           onClick={() => setIsStepsOpen(!isStepsOpen)}
